@@ -11,7 +11,7 @@ else ()
     set(TARGET_DIR "release")
 endif ()
 
-set(RUST_PART_LIB "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR}/libminitrace_rust.a")
+set(RUST_PART_LIB "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR}/libminitrace_rust.so")
 set(RUST_PART_CXX "${CMAKE_CURRENT_BINARY_DIR}/cxxbridge/minitrace-c/src/lib.rs.cc")
 set(RUST_PART_H "${CMAKE_CURRENT_BINARY_DIR}/cxxbridge/minitrace-c/src/lib.rs.h")
 add_custom_command(
@@ -25,7 +25,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}/cxxbridge/minitrace-c/src
     ${CMAKE_SOURCE_DIR}/include
 )
-add_library(minitrace_c STATIC src/minitrace_c.cpp ${RUST_PART_CXX})
+add_library(minitrace_c SHARED src/minitrace_c.cpp ${RUST_PART_CXX})
 set_target_properties(minitrace_c PROPERTIES PUBLIC_HEADER "${CMAKE_SOURCE_DIR}/include/minitrace_c.h;${RUST_PART_H}")
 
 include(CMakePackageConfigHelpers)
