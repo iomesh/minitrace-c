@@ -7,6 +7,21 @@ use minitrace::{
 };
 use minitrace_opentelemetry::OpenTelemetryReporter;
 use std::{mem::transmute, time::Duration};
+use once_cell::sync::OnceCell;
+static SAMPLE_RATIO: OnceCell<f32> = OnceCell::new();
+
+fn sample_ratio_init() -> f32 {
+    match std::env::var("MINITRACE_SAMPLE_RATIO") {
+        Ok(s) => {
+            match s.parse::<f32>() {
+                Ok(v) => return v,
+                Err(_) => ()
+            }
+        },
+        Err(_) => ()
+    }
+    0.0
+}
 
 use self::ffi::*;
 
@@ -79,6 +94,10 @@ mod ffi {
         ///
         /// Once destroyed (dropped), the root span automatically submits all associated child spans to the reporter.
         fn mtr_create_root_span(name: &'static str, parent: mtr_span_ctx) -> mtr_span;
+
+        fn mtr_create_root_span_with_prob(name: &'static str, parent: mtr_span_ctx, prob: f32) -> mtr_span;
+
+        fn mtr_create_root_span_with_preset_prob(name: &'static str, parent: mtr_span_ctx) -> mtr_span;
 
         /// Create a new child span associated with the specified parent span.
         fn mtr_create_child_span_enter(name: &'static str, parent: &mtr_span) -> mtr_span;
@@ -213,11 +232,31 @@ fn mtr_create_span_ctx(span: &mtr_span) -> mtr_span_ctx {
 }
 
 fn mtr_create_span_ctx_loc() -> mtr_span_ctx {
-    unsafe { transmute(SpanContext::current_local_parent().unwrap()) }
+    unsafe { transmute(SpanContext::current_local_parent().unwrap_or_default()) }
 }
 
 fn mtr_create_root_span(name: &'static str, parent: mtr_span_ctx) -> mtr_span {
     unsafe { transmute(Span::root(name, transmute(parent))) }
+}
+
+fn mtr_create_root_span_with_prob(name: &'static str, parent: mtr_span_ctx, prob: f32) -> mtr_span {
+    unsafe { transmute(
+        if rand::random::<f32>() < prob {
+            Span::root(name, transmute(parent))
+        } else {
+            Span::noop()
+        }
+    ) }
+}
+
+fn mtr_create_root_span_with_preset_prob(name: &'static str, parent: mtr_span_ctx) -> mtr_span {
+    unsafe { transmute(
+        if rand::random::<f32>() < *SAMPLE_RATIO.get_or_init(sample_ratio_init) {
+            Span::root(name, transmute(parent))
+        } else {
+            Span::noop()
+        }
+    ) }
 }
 
 fn mtr_create_child_span_enter(name: &'static str, parent: &mtr_span) -> mtr_span {
