@@ -17,6 +17,8 @@ minitrace = { version = "0.5.1", features = ["enable"] }
 minitrace-opentelemetry = "0.5.1"
 opentelemetry = { version = "0.19", features = ["trace"] }
 opentelemetry-otlp = { version = "0.12", features = ["trace", "grpc-sys"] }
+rand = "0.8.5"
+once_cell = "1.13.1"
 
 [build-dependencies]
 cxx-build = "1.0.106"

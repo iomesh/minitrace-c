@@ -68,6 +68,12 @@ mtr_span_ctx mtr_create_span_ctx_loc(void);
  */
 mtr_span mtr_create_root_span(const char *name, mtr_span_ctx parent);
 
+/* Same as mtr_create_root_span, but return a non-empty span only with probability `prob`. */
+mtr_span mtr_create_root_span_with_prob(const char *name, mtr_span_ctx parent, float prob);
+
+/* Same as mtr_create_root_span_with_prob, but read `prob` from environment variable MINITRACE_SAMPLE_RATIO. */
+mtr_span mtr_create_root_span_with_preset_prob(const char *name, mtr_span_ctx parent);
+
 /* Create a new child span associated with the specified parent span. */
 mtr_span mtr_create_child_span_enter(const char *name, mtr_span const *parent);
 

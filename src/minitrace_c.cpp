@@ -86,6 +86,22 @@ mtr_span mtr_create_root_span(const char *name, mtr_span_ctx parent) {
   return std::move(_ms.c);
 }
 
+mtr_span mtr_create_root_span_with_prob(const char *name, mtr_span_ctx parent, float prob) {
+  union _mtr_span _ms = {
+      .f = minitrace_glue::mtr_create_root_span_with_prob(
+          name, *(ffi::mtr_span_ctx *)(&parent), prob),
+  };
+  return std::move(_ms.c);
+}
+
+mtr_span mtr_create_root_span_with_preset_prob(const char *name, mtr_span_ctx parent) {
+  union _mtr_span _ms = {
+      .f = minitrace_glue::mtr_create_root_span_with_preset_prob(
+          name, *(ffi::mtr_span_ctx *)(&parent)),
+  };
+  return std::move(_ms.c);
+}
+
 mtr_span mtr_create_child_span_enter(const char *name, mtr_span const *parent) {
   union _mtr_span _p = {
       .c = *parent,
