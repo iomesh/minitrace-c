@@ -43,7 +43,7 @@ install(TARGETS minitrace_c
         PUBLIC_HEADER DESTINATION include/minitrace_c
         )
 
-# install(FILES ${RUST_PART_LIB} DESTINATION lib)
+install(FILES ${RUST_PART_LIB} DESTINATION lib)
 
 install(EXPORT minitrace_cTargets
         FILE minitrace_cTargets.cmake
