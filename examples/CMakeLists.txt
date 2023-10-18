@@ -8,7 +8,7 @@ find_package(minitrace_c 0.5.1)
 
 function(add_example target_name source_file)
   add_executable(${target_name} ${source_file})
-  target_link_libraries(${target_name} minitrace_c minitrace_rust)
+  target_link_libraries(${target_name} minitrace_c)
 endfunction()
 
 set(C_EXAMPLE_SOURCES
