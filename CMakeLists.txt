@@ -26,7 +26,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/include
 )
 add_library(minitrace_c SHARED src/minitrace_c.cpp ${RUST_PART_CXX})
-set(LINKER_FLAGS "-Bsymbolic")
+set(LINKER_FLAGS "-Wl,-Bsymbolic")
 target_link_libraries(minitrace_c PRIVATE ${RUST_PART_LIB} ${LINKER_FLAGS})
 set_target_properties(minitrace_c PROPERTIES PUBLIC_HEADER "${CMAKE_SOURCE_DIR}/include/minitrace_c.h;${RUST_PART_H}")
 
