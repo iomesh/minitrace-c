@@ -27,6 +27,7 @@ include_directories(
 )
 add_library(minitrace_c SHARED src/minitrace_c.cpp ${RUST_PART_CXX})
 target_link_libraries(minitrace_c ${RUST_PART_LIB})
+target_link_options(minitrace_c PRIVATE -Bsymbolic)
 set_target_properties(minitrace_c PROPERTIES PUBLIC_HEADER "${CMAKE_SOURCE_DIR}/include/minitrace_c.h;${RUST_PART_H}")
 
 include(CMakePackageConfigHelpers)
