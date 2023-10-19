@@ -78,6 +78,13 @@ mtr_span_ctx mtr_create_span_ctx_loc() {
   return std::move(_msc.c);
 }
 
+mtr_span mtr_create_noop_span() {
+  union _mtr_span _ms = {
+      .f = minitrace_glue::mtr_create_noop_span(),
+  };
+  return std::move(_ms.c);
+}
+
 mtr_span mtr_create_root_span(const char *name, mtr_span_ctx parent) {
   union _mtr_span _ms = {
       .f = minitrace_glue::mtr_create_root_span(

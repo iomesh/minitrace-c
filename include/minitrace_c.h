@@ -61,6 +61,9 @@ mtr_span_ctx mtr_create_span_ctx(mtr_span const *span);
 /* Creates a `mtr_span_ctx` from the current local parent span. */
 mtr_span_ctx mtr_create_span_ctx_loc(void);
 
+/* Create a noop span as a placeholder. */
+mtr_span mtr_create_noop_span();
+
 /*
  * Create a new trace and return its root span.
  *

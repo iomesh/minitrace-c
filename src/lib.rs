@@ -90,6 +90,9 @@ mod ffi {
         ///Creates a `mtr_span_context` from the current local parent span.
         fn mtr_create_span_ctx_loc() -> mtr_span_ctx;
 
+        ///Creates a noop span as a placeholder.
+        fn mtr_create_noop_span() -> mtr_span;
+
         /// Create a new trace and return its root span.
         ///
         /// Once destroyed (dropped), the root span automatically submits all associated child spans to the reporter.
@@ -235,28 +238,40 @@ fn mtr_create_span_ctx_loc() -> mtr_span_ctx {
     unsafe { transmute(SpanContext::current_local_parent().unwrap_or_default()) }
 }
 
+fn mtr_create_noop_span() -> mtr_span {
+    unsafe { transmute(Span::noop()) }
+}
+
 fn mtr_create_root_span(name: &'static str, parent: mtr_span_ctx) -> mtr_span {
-    unsafe { transmute(Span::root(name, transmute(parent))) }
+    unsafe {
+        let parent = transmute::<mtr_span_ctx, SpanContext>(parent);
+        transmute(
+        if parent.trace_id.0 != 0 {
+            Span::root(name, parent)
+        } else {
+            Span::noop()
+        }
+    ) }
 }
 
 fn mtr_create_root_span_with_prob(name: &'static str, parent: mtr_span_ctx, prob: f32) -> mtr_span {
-    unsafe { transmute(
+    unsafe {
         if rand::random::<f32>() < prob {
-            Span::root(name, transmute(parent))
+            mtr_create_root_span(name, parent)
         } else {
-            Span::noop()
+            transmute(Span::noop())
         }
-    ) }
+    }
 }
 
 fn mtr_create_root_span_with_preset_prob(name: &'static str, parent: mtr_span_ctx) -> mtr_span {
-    unsafe { transmute(
+    unsafe {
         if rand::random::<f32>() < *SAMPLE_RATIO.get_or_init(sample_ratio_init) {
-            Span::root(name, transmute(parent))
+            mtr_create_root_span(name, parent)
         } else {
-            Span::noop()
+            transmute(Span::noop())
         }
-    ) }
+    }
 }
 
 fn mtr_create_child_span_enter(name: &'static str, parent: &mtr_span) -> mtr_span {
