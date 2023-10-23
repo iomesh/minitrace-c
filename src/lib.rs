@@ -93,6 +93,8 @@ mod ffi {
         ///Creates a noop span as a placeholder.
         fn mtr_create_noop_span() -> mtr_span;
 
+        fn mtr_is_valid_context(ctx: mtr_span_ctx) -> bool;
+
         /// Create a new trace and return its root span.
         ///
         /// Once destroyed (dropped), the root span automatically submits all associated child spans to the reporter.
@@ -240,6 +242,10 @@ fn mtr_create_span_ctx_loc() -> mtr_span_ctx {
 
 fn mtr_create_noop_span() -> mtr_span {
     unsafe { transmute(Span::noop()) }
+}
+
+fn mtr_is_valid_context(ctx: mtr_span_ctx) -> bool {
+    unsafe { transmute::<mtr_span_ctx, SpanContext>(ctx).trace_id.0 != 0 }
 }
 
 fn mtr_create_root_span(name: &'static str, parent: mtr_span_ctx) -> mtr_span {
