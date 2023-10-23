@@ -64,7 +64,7 @@ mtr_span_ctx mtr_create_span_ctx_loc(void);
 /* Create a noop span as a placeholder. */
 mtr_span mtr_create_noop_span();
 
-bool mtr_is_valid_context(mtr_span_ctx ctx);
+uint8_t mtr_is_valid_context(mtr_span_ctx ctx);
 
 /*
  * Create a new trace and return its root span.

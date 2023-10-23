@@ -78,7 +78,7 @@ mtr_span_ctx mtr_create_span_ctx_loc() {
   return std::move(_msc.c);
 }
 
-bool mtr_is_valid_context(mtr_span_ctx ctx) {
+uint8_t mtr_is_valid_context(mtr_span_ctx ctx) {
   return minitrace_glue::mtr_is_valid_context(*(ffi::mtr_span_ctx *)(&ctx));
 }
 
