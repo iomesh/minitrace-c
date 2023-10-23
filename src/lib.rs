@@ -93,7 +93,7 @@ mod ffi {
         ///Creates a noop span as a placeholder.
         fn mtr_create_noop_span() -> mtr_span;
 
-        fn mtr_is_valid_context(ctx: mtr_span_ctx) -> bool;
+        fn mtr_is_valid_context(ctx: mtr_span_ctx) -> u8;
 
         /// Create a new trace and return its root span.
         ///
@@ -244,8 +244,8 @@ fn mtr_create_noop_span() -> mtr_span {
     unsafe { transmute(Span::noop()) }
 }
 
-fn mtr_is_valid_context(ctx: mtr_span_ctx) -> bool {
-    unsafe { transmute::<mtr_span_ctx, SpanContext>(ctx).trace_id.0 != 0 }
+fn mtr_is_valid_context(ctx: mtr_span_ctx) -> u8 {
+    unsafe { if transmute::<mtr_span_ctx, SpanContext>(ctx).trace_id.0 != 0 {1} else {0} }
 }
 
 fn mtr_create_root_span(name: &'static str, parent: mtr_span_ctx) -> mtr_span {
