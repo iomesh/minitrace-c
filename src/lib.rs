@@ -30,7 +30,7 @@ mod ffi {
 
     #[namespace = "ffi"]
     struct mtr_span_ctx {
-        _padding: [u64; 3],
+        _padding: [u64; 4],
     }
 
     #[namespace = "ffi"]

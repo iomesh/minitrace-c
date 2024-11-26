@@ -13,7 +13,7 @@ extern "C" {
 #endif
 
 typedef struct mtr_span_ctx {
-	uint64_t _padding[3];
+	uint64_t _padding[4];
 } mtr_span_ctx;
 
 typedef struct mtr_span {
