@@ -65,7 +65,7 @@ mod ffi {
 
     #[namespace = "ffi"]
     struct mtr_otel_rptr {
-        _padding: [u64; 24],
+        _padding: [u64; 21],
     }
 
     #[namespace = "ffi"]
